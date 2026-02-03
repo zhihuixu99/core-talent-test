@@ -3,18 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <title>核心天赋觉醒测评</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-purple-200 to-blue-200 flex items-center justify-center">
 
-  <div class="backdrop-blur bg-white/40 p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
-    <h1 class="text-2xl font-bold mb-4">核心天赋觉醒测评</h1>
-    <p class="mb-6 text-gray-700">输入兑换码，开始你的觉醒之旅</p>
-    <input class="w-full p-3 rounded-lg mb-4" placeholder="请输入兑换码" />
-    <button class="w-full bg-black text-white py-3 rounded-lg">
-      开始测评
-    </button>
+  <!-- 主卡片 -->
+  <div class="backdrop-blur bg-white/40 border border-white/30 p-8 rounded-2xl shadow-xl w-full max-w-md text-center">
+
+    <h1 class="text-2xl font-bold mb-2">核心天赋觉醒测评</h1>
+    <p class="text-gray-700 mb-6">
+      输入兑换码，发现你最具优势的天赋方向
+    </p>
+
+    <!-- 输入区 -->
+    <div id="inputArea">
+      <input
+        id="codeInput"
+        placeholder="请输入兑换码"
+        class="w-full p-3 rounded-lg mb-4 border border-gray-300 focus:outline-none"
+      />
+      <button
+        onclick="checkCode()"
+        class="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
+      >
+        开始测评
+      </button>
+    </div>
+
+    <!-- 结果区 -->
+    <div id="resultArea" class="hidden text-left mt-6">
+      <h2 class="text-xl font-semibold mb-3">你的测评结果</h2>
+      <p id="resultText" class="text-gray-700 leading-relaxed"></p>
+    </div>
+
   </div>
+
+<script>
+  // ====== 兑换码配置 ======
+
+  const BASIC_CODES = [
+    "CORE-A-7F2K","CORE-A-9M3Q","CORE-A-X8P4","CORE-A-L6D9","CORE-A-R2H7",
+    "CORE-A-K5T8","CORE-A-3QF6","CORE-A-M9X2","CORE-A-D4P7","CORE-A-H8L5"
+  ];
+
+  const PRO_CODES = [
+    "CORE-B-Z7H4","CORE-B-R2X9","CORE-B-F8M1","CORE-B-K5Q3","CORE-B-P9D6",
+    "CORE-B-M4L8","CORE-B-X2T7","CORE-B-QH5R","CORE-B-7K9F","CORE-B-D3X8"
+  ];
+
+  function checkCode() {
+    const input = document.getElementById("codeInput").value.trim();
+    if (!input) {
+      alert("请输入兑换码");
+      return;
+    }
+
+    const used = JSON.parse(localStorage.getItem("usedCodes") || "{}");
+
+    if (used[input]) {
+      showResult(used[input]);
+      return;
+    }
+
+    if (BASIC_CODES.includes(input)) {
+      used[input] = "basic";
+      localStorage.setItem("usedCodes", JSON.stringify(used));
+      showResult("basic");
+      return;
+    }
+
+    if (PRO_CODES.includes(input)) {
+      used[input] = "pro";
+      localStorage.setItem("usedCodes", JSON.stringify(used));
+      showResult("pro");
+      return;
+    }
+
+    alert("兑换码无效，请检查后重试");
+  }
+
+  function showResult(type) {
+    document.getElementById("inputArea").classList.add("hidden");
+    document.getElementById("resultArea").classList.remove("hidden");
+
+    const resultText = document.getElementById("resultText");
+
+    if (type === "basic") {
+      resultText.innerText =
+        "【普通版结果】\n\n" +
+        "你的核心优势更偏向于「执行力 × 战略思维」。\n\n" +
+        "你擅长在不确定环境中拆解目标，并通过持续行动推动结果落地。\n\n" +
+        "建议你优先选择：\n" +
+        "• 有明确目标的长期项目\n" +
+        "• 可通过努力拉开差距的方向\n\n" +
+        "（本版本为基础解读）";
+    }
+
+    if (type === "pro") {
+      resultText.innerText =
+        "【高阶版专业解读】\n\n" +
+        "你在执行力、战略思维、关系建立、影响力四个维度中，呈现出明显的复合型优势。\n\n" +
+        "你并非单点型人才，而是具备整合资源、判断趋势并持续推进的能力。\n\n" +
+        "在职业与个人成长中，你最适合：\n" +
+        "• 自主度高的方向\n" +
+        "• 内容输出 / 个人品牌 / 项目主理\n\n" +
+        "建议你避免：\n" +
+        "• 高重复、低决策权的环境\n" +
+        "• 仅依赖外部指令的岗位\n\n" +
+        "（高阶版为完整专业解读）";
+    }
+  }
+</script>
 
 </body>
 </html>
